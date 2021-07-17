@@ -1,0 +1,31 @@
+version: '3.7'
+
+services:
+    webdav:
+        container_name: webdav
+        build:
+            context: .
+        volumes:
+            - ./data:/data
+        environment:
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - TZ=${TZ}
+            - TIMEOUTS_S=${TIMEOUTS_S}
+            - CLIENT_MAX_BODY_SIZE=${CLIENT_MAX_BODY_SIZE}
+        restart: unless-stopped
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.webdav.service=webdav"
+            - "traefik.http.routers.webdav.tls=true"
+            - "traefik.http.routers.webdav.tls.certresolver=dns-cloudflare"
+            - "traefik.http.routers.webdav.entrypoints=websecure"
+            - "traefik.http.services.webdav.loadbalancer.server.port=80"
+            - "traefik.http.routers.webdav.middlewares=authelia@docker"
+        networks:
+            - web_proxy
+      
+networks:
+    web_proxy:
+        external:
+            name: web_proxy

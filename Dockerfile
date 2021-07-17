@@ -26,7 +26,9 @@ RUN apt-get update && \
 
 WORKDIR /usr/src
 RUN wget https://nginx.org/download/nginx-${NGINX_VER}.tar.gz -O /usr/src/nginx-${NGINX_VER}.tar.gz && \
-  ls *.gz | xargs -n1 tar -xzf
+    wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VER}.tar.gz \
+    -O /usr/src/headers-more-nginx-module-v${HEADERS_MORE_VER}.tar.gz && \
+    ls *.gz | xargs -n1 tar -xzf
 
 WORKDIR /usr/src/nginx-${NGINX_VER}
 RUN ./configure --prefix=/etc/nginx \
@@ -83,7 +85,8 @@ RUN ./configure --prefix=/etc/nginx \
   --with-pcre \
   --with-pcre-jit \
   --with-openssl-opt=no-nextprotoneg \
-  --with-debug
+  --with-debug \
+  --add-module=/usr/src/nginx-dav-ext-module-${NGINX_DAV_EXT_VER} 
 
 RUN make -j${MAKE_THREADS} && \
   make install && \

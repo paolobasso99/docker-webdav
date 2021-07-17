@@ -1,6 +1,6 @@
 # docker-webdav
 
-A Nginx WebDAV docker container personalized to my needs.
+A Nginx WebDAV docker image personalized to my needs.
 
 The image, and resulting container, is designed to run behind a reverse proxy to handle SSL and authentication.
 
