@@ -29,7 +29,7 @@ There are a few ways to set up this image:
 
 - Clone this repository, copy `.env.example` to `.env`, edit the `.env` and run `docker-compose build && docker-compose up` to build and run the container. Access it from http://localhost:80;
 - Build the Dockerfile and run the container with docker;
-- Pull and run my docker image and use it with docker-compose or docker.
+- Pull and run my docker image [paolobasso/docker-webdav](https://hub.docker.com/paolobasso/docker-webdav) and use it with docker-compose or docker.
 
 # SSL and authentication
 

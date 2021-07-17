@@ -3,8 +3,7 @@ version: '3.7'
 services:
     webdav:
         container_name: webdav
-        build:
-            context: .
+        image: paolobasso/docker-webdav
         volumes:
             - ./data:/data
         environment:
