@@ -27,7 +27,7 @@ to find your `PUID` and `PGID` use `id username` as below:
 
 There are a few ways to set up this image:
 
-- Pull and run my docker image [paolobasso/webdav](https://hub.docker.com/paolobasso/webdav) and use it with docker-compose or docker.
+- Pull and run my docker image [paolobasso/webdav](https://hub.docker.com/r/paolobasso/webdav) and use it with docker-compose or docker.
 - Clone this repository, copy `.env.example` to `.env`, edit the `.env` and run `docker-compose build && docker-compose up` to build and run the container. Access it from http://localhost:80;
 - Build the Dockerfile and run the container with docker;
 
