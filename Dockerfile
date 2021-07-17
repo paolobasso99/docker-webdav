@@ -3,7 +3,8 @@ FROM ghcr.io/linuxserver/baseimage-ubuntu:focal-version-a5bbd122
 LABEL maintainer="Paolo Basso"
 
 ARG NGINX_VER_ARG=1.21.1
-ENV NGINX_VER=$NGINX_VER_ARG 
+ENV NGINX_VER=$NGINX_VER_ARG
+ENV NGINX_DAV_EXT_VER 3.0.0
 
 ENV MAKE_THREADS 4
 ENV DEBIAN_FRONTEND noninteractive
@@ -26,8 +27,8 @@ RUN apt-get update && \
 
 WORKDIR /usr/src
 RUN wget https://nginx.org/download/nginx-${NGINX_VER}.tar.gz -O /usr/src/nginx-${NGINX_VER}.tar.gz && \
-    wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VER}.tar.gz \
-    -O /usr/src/headers-more-nginx-module-v${HEADERS_MORE_VER}.tar.gz && \
+    wget https://github.com/arut/nginx-dav-ext-module/archive/v${NGINX_DAV_EXT_VER}.tar.gz \
+    -O /usr/src/nginx-dav-ext-module-v${NGINX_DAV_EXT_VER}.tar.gz && \
     ls *.gz | xargs -n1 tar -xzf
 
 WORKDIR /usr/src/nginx-${NGINX_VER}
