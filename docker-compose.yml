@@ -1,21 +1,18 @@
 version: '3.3'
 services:
-    nginxwebdav:
-        container_name: nginxwebdav
+    webdav:
+        container_name: webdav
         build:
             context: .
         volumes:
             - ./data:/data
-            - ./htpasswd:/etc/nginx/htpasswd
         environment:
-            - PUID=501
-            - PGID=20
-            - TZ=Europe/Berlin
-            - WEBDAV_USERNAME=user
-            - WEBDAV_PASSWORD=password
-            - SERVER_NAMES=localhost
-            - TIMEOUTS_S=1200 # these are seconds
-            - CLIENT_MAX_BODY_SIZE=120M # must end with M(egabytes) or G(igabytes)
+            - PUID=${PUID}
+            - PGID=${PGID}
+            - TZ=${TZ}
+            - TIMEOUTS_S=${TIMEOUTS_S}
+            - CLIENT_MAX_BODY_SIZE=${CLIENT_MAX_BODY_SIZE}
         ports:
-          - 32080:80
+          - 80:80
+        restart: unless-stopped
         

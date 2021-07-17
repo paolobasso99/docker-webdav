@@ -1,3 +1,4 @@
 data
 build.sh
 Dockerfile.template
+.env

@@ -1,20 +1,9 @@
-# Builds a modern no-nonsense WebDAV system with NGINX, to be put in front of a reverse proxy for SSL.
-# Based on linuxserver.io Ubuntu, so all their magic is here, too.
-# Inspired (= copy paste) by https://www.robpeck.com/2020/06/making-webdav-actually-work-on-nginx/ 
-#   Go buy something from [their Amazon.com wishlist](https://www.amazon.com/hz/wishlist/ls/2XJI6HVS09C4J)
-#   Added small fixes for future upgrades and dependencies
-# FAQ: 
-# Q: Will you add SSL? N: No, I can't bother, I use a reverse proxy. Pull requests are however welcome!
-
 FROM ghcr.io/linuxserver/baseimage-ubuntu:focal-version-a5bbd122
 
-LABEL maintainer="Daniel Graziotin, daniel@ineed.coffee"
+LABEL maintainer="Paolo Basso"
 
 ARG NGINX_VER_ARG=1.21.1
 ENV NGINX_VER=$NGINX_VER_ARG 
-ENV NGINX_DAV_EXT_VER 3.0.0
-ENV NGINX_FANCYINDEX_VER 0.5.1
-ENV HEADERS_MORE_VER 0.33
 
 ENV MAKE_THREADS 4
 ENV DEBIAN_FRONTEND noninteractive
@@ -37,12 +26,6 @@ RUN apt-get update && \
 
 WORKDIR /usr/src
 RUN wget https://nginx.org/download/nginx-${NGINX_VER}.tar.gz -O /usr/src/nginx-${NGINX_VER}.tar.gz && \
-  wget https://github.com/arut/nginx-dav-ext-module/archive/v${NGINX_DAV_EXT_VER}.tar.gz \
-    -O /usr/src/nginx-dav-ext-module-v${NGINX_DAV_EXT_VER}.tar.gz && \
-  wget https://github.com/aperezdc/ngx-fancyindex/archive/v${NGINX_FANCYINDEX_VER}.tar.gz \
-    -O /usr/src/ngx-fancyindex-v${NGINX_FANCYINDEX_VER}.tar.gz && \
-  wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VER}.tar.gz \
-    -O /usr/src/headers-more-nginx-module-v${HEADERS_MORE_VER}.tar.gz && \
   ls *.gz | xargs -n1 tar -xzf
 
 WORKDIR /usr/src/nginx-${NGINX_VER}
@@ -100,10 +83,7 @@ RUN ./configure --prefix=/etc/nginx \
   --with-pcre \
   --with-pcre-jit \
   --with-openssl-opt=no-nextprotoneg \
-  --with-debug \
-  --add-module=/usr/src/nginx-dav-ext-module-${NGINX_DAV_EXT_VER} \
-  --add-module=/usr/src/ngx-fancyindex-${NGINX_FANCYINDEX_VER} \
-  --add-module=/usr/src/headers-more-nginx-module-${HEADERS_MORE_VER}
+  --with-debug
 
 RUN make -j${MAKE_THREADS} && \
   make install && \
@@ -124,8 +104,6 @@ RUN mkdir -p /etc/nginx/logs \
   /var/cache/nginx/uwsgi_temp \
   && chmod 700 /var/cache/nginx/* \
   && chown abc:abc /var/cache/nginx/* \
-  # from https://github.com/nginxinc/docker-nginx
-  # forward request and error logs to docker log collector
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
