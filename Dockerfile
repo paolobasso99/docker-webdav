@@ -1,4 +1,4 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:focal-version-a5bbd122
+FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
 
 LABEL maintainer="Paolo Basso"
 

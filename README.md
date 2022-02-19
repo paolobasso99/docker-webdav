@@ -1,11 +1,10 @@
 # docker-webdav
 
-A Nginx WebDAV docker image personalized to my needs.
+A simple Nginx WebDAV docker image.
 
 The image, and resulting container, is designed to run behind a reverse proxy to handle SSL and authentication.
 
-# Settings
-
+## Settings
 Mount the `/data` volume, for example `./path/to/dir:/data`, which is the root folder that nginx will serve for WebDAV content (`/data`).
 
 These are environment variables you can set, and what they do.
@@ -23,14 +22,31 @@ to find your `PUID` and `PGID` use `id username` as below:
     uid=1000(dockeruser) gid=1000(dockergroup) groups=1000(dockergroup)
 ```
 
-# Set up
-
+## Set up
 There are a few ways to set up this image:
 
-- Pull and run my docker image [paolobasso/webdav](https://hub.docker.com/r/paolobasso/webdav) and use it with docker-compose or docker.
+- Pull and run my docker image [paolobasso/webdav](https://hub.docker.com/r/paolobasso/webdav) and use it with `docker-compose` or `docker run`. An example `docker-compose.yml`:
+```yaml
+version: '3.8'
+
+services:
+  webdav:
+    container_name: webdav
+    image: paolobasso/webdav
+    volumes:
+      - ./data:/data
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - TIMEOUTS_S=1200
+      - CLIENT_MAX_BODY_SIZE=1G
+    ports:
+      - 80:80
+    restart: unless-stopped
+```
 - Clone this repository, copy `.env.example` to `.env`, edit the `.env` and run `docker-compose build && docker-compose up` to build and run the container. Access it from http://localhost:80;
 - Build the Dockerfile and run the container with docker;
 
-# SSL and authentication
-
+## SSL and authentication
 No SSL and authentication is provided. For these features you should put the container behind a reverse proxy. 
