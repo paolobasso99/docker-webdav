@@ -1,4 +1,7 @@
 # docker-webdav
+![GitHub Repo stars](https://img.shields.io/github/stars/paolobasso99/docker-webdav?label=GITHUB%20STARS&style=for-the-badge)
+![Docker Pulls](https://img.shields.io/docker/pulls/paolobasso/webdav?style=for-the-badge)
+![Docker Image Size (tag)](https://img.shields.io/docker/image-size/paolobasso/webdav/latest?style=for-the-badge)
 
 A simple Nginx WebDAV docker image.
 
