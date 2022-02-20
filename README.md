@@ -3,9 +3,11 @@
 ![Docker Pulls](https://img.shields.io/docker/pulls/paolobasso/webdav?style=for-the-badge)
 ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/paolobasso/webdav/latest?style=for-the-badge)
 
-A simple Nginx WebDAV docker image.
+A simple Nginx WebDAV docker image. The image, and resulting container, is designed to run behind a reverse proxy to handle SSL and authentication. Based on [dgraziotin/docker-nginx-webdav-nononsense](https://github.com/dgraziotin/docker-nginx-webdav-nononsense).
 
-The image, and resulting container, is designed to run behind a reverse proxy to handle SSL and authentication.
+Links:
+- [Source code on GitHub](https://github.com/paolobasso99/docker-webdav)
+- [Repository on DockerHub](https://hub.docker.com/r/paolobasso/webdav)
 
 ## Settings
 Mount the `/data` volume, for example `./path/to/dir:/data`, which is the root folder that nginx will serve for WebDAV content (`/data`).
@@ -29,6 +31,7 @@ to find your `PUID` and `PGID` use `id username` as below:
 There are a few ways to set up this image:
 
 - Pull and run my docker image [paolobasso/webdav](https://hub.docker.com/r/paolobasso/webdav) and use it with `docker-compose` or `docker run`. An example `docker-compose.yml`:
+
 ```yaml
 version: '3.8'
 
@@ -48,6 +51,7 @@ services:
       - 80:80
     restart: unless-stopped
 ```
+
 - Clone this repository, copy `.env.example` to `.env`, edit the `.env` and run `docker-compose build && docker-compose up` to build and run the container. Access it from http://localhost:80;
 - Build the Dockerfile and run the container with docker;
 

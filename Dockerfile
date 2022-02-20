@@ -1,10 +1,11 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:focal
+FROM lscr.io/linuxserver/baseimage-ubuntu:focal AS builder
 
 LABEL maintainer="Paolo Basso"
 
-ARG NGINX_VER_ARG=1.21.1
+ARG NGINX_VER_ARG=1.21.6
 ENV NGINX_VER=$NGINX_VER_ARG
 ENV NGINX_DAV_EXT_VER 3.0.0
+ENV HEADERS_MORE_VER 0.33
 
 ENV MAKE_THREADS 4
 ENV DEBIAN_FRONTEND noninteractive
@@ -12,24 +13,31 @@ ENV LANG C.UTF-8
 ENV APT_LISTCHANGES_FRONTEND none
 
 RUN apt-get update && \
-  apt-get -y install build-essential \
-  libcurl4-openssl-dev \
-  libxml2-dev mime-support \
+  apt-get -y install --no-install-recommends \
+  apache2-utils \
   automake \
-  libssl-dev \
-  libpcre3-dev \
-  zlib1g-dev \
-  libxslt1-dev \
-  wget libgd-dev \
+  build-essential \
+  libcurl4-openssl-dev \
+  libgd-dev \
   libgeoip-dev \
+  libpcre3-dev \
   libperl-dev \
-  apache2-utils
+  libssl-dev \
+  libxml2-dev \
+  libxslt1-dev \
+  mime-support \
+  wget \
+  zlib1g-dev
+
+RUN apt-get -y autoclean
 
 WORKDIR /usr/src
 RUN wget https://nginx.org/download/nginx-${NGINX_VER}.tar.gz -O /usr/src/nginx-${NGINX_VER}.tar.gz && \
     wget https://github.com/arut/nginx-dav-ext-module/archive/v${NGINX_DAV_EXT_VER}.tar.gz \
-    -O /usr/src/nginx-dav-ext-module-v${NGINX_DAV_EXT_VER}.tar.gz && \
-    ls *.gz | xargs -n1 tar -xzf
+      -O /usr/src/nginx-dav-ext-module-v${NGINX_DAV_EXT_VER}.tar.gz && \
+    wget https://github.com/openresty/headers-more-nginx-module/archive/v${HEADERS_MORE_VER}.tar.gz \
+      -O /usr/src/headers-more-nginx-module-v${HEADERS_MORE_VER}.tar.gz && \
+    /bin/bash -c "set -o pipefail && ls *.gz | xargs -n1 tar -xzf"
 
 WORKDIR /usr/src/nginx-${NGINX_VER}
 RUN ./configure --prefix=/etc/nginx \
@@ -90,8 +98,31 @@ RUN ./configure --prefix=/etc/nginx \
   --add-module=/usr/src/nginx-dav-ext-module-${NGINX_DAV_EXT_VER} 
 
 RUN make -j${MAKE_THREADS} && \
-  make install && \
-  rm -rf /usr/src/*
+  make install
+
+FROM lscr.io/linuxserver/baseimage-ubuntu:focal
+COPY --from=builder /etc/nginx /etc/nginx
+COPY --from=builder /usr/lib/nginx/modules/ /usr/lib/nginx/modules/
+COPY --from=builder /usr/sbin/nginx /usr/sbin/nginx
+COPY --from=builder /var/log/nginx /var/log/nginx
+
+RUN apt-get update && \
+  apt-get -y install --no-install-recommends \
+  apache2-utils \
+  automake \
+  build-essential \
+  libcurl4-openssl-dev \
+  libgd-dev \
+  libgeoip-dev \
+  libpcre3-dev \
+  libperl-dev \
+  libssl-dev \
+  libxml2-dev \
+  libxslt1-dev \
+  mime-support \
+  zlib1g-dev
+
+RUN apt-get -y autoclean
 
 VOLUME /data
 VOLUME /config
@@ -108,9 +139,11 @@ RUN mkdir -p /etc/nginx/logs \
   /var/cache/nginx/uwsgi_temp \
   && chmod 700 /var/cache/nginx/* \
   && chown abc:abc /var/cache/nginx/* \
+  # from https://github.com/nginxinc/docker-nginx
+  # forward request and error logs to docker log collector
   && ln -sf /dev/stdout /var/log/nginx/access.log \
   && ln -sf /dev/stderr /var/log/nginx/error.log
 
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-CMD /entrypoint.sh && nginx -g "daemon off;"
+COPY /root /
+WORKDIR /data
+CMD ["/usr/sbin/nginx"]
