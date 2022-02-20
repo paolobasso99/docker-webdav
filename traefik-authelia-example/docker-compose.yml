@@ -6,12 +6,6 @@ services:
         image: paolobasso/webdav
         volumes:
             - ./data:/data
-        environment:
-            - PUID=${PUID}
-            - PGID=${PGID}
-            - TZ=${TZ}
-            - TIMEOUTS_S=${TIMEOUTS_S}
-            - CLIENT_MAX_BODY_SIZE=${CLIENT_MAX_BODY_SIZE}
         restart: unless-stopped
         labels:
             - "traefik.enable=true"

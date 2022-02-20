@@ -7,13 +7,7 @@ services:
             context: .
         volumes:
             - ./data:/data
-        environment:
-            - PUID=${PUID}
-            - PGID=${PGID}
-            - TZ=${TZ}
-            - TIMEOUTS_S=${TIMEOUTS_S}
-            - CLIENT_MAX_BODY_SIZE=${CLIENT_MAX_BODY_SIZE}
         ports:
-          - 80:80
+          - 8080:443
         restart: unless-stopped
         
