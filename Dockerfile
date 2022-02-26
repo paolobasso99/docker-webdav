@@ -51,51 +51,52 @@ RUN ./configure --prefix=/etc/nginx \
   --group=nginx \
   --build=Ubuntu \
   --builddir=nginx-${NGINX_VER} \
-  --with-select_module \
-  --with-poll_module \
-  --with-threads \
+  --http-client-body-temp-path=/var/cache/nginx/client_temp \
+  --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
+  --http-log-path=/var/log/nginx/access.log \
+  --http-proxy-temp-path=/var/cache/nginx/proxy_temp \
+  --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
+  --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
+  --with-compat \
+  --with-debug \
   --with-file-aio \
-  --with-http_ssl_module \
-  --with-http_v2_module \
-  --with-http_realip_module \
   --with-http_addition_module \
-  --with-http_xslt_module=dynamic \
-  --with-http_image_filter_module=dynamic \
-  --with-http_geoip_module=dynamic \
-  --with-http_sub_module \
+  --with-http_auth_request_module \
   --with-http_dav_module \
+  --with-http_degradation_module \
   --with-http_flv_module \
-  --with-http_mp4_module \
+  --with-http_geoip_module=dynamic \
   --with-http_gunzip_module \
   --with-http_gzip_static_module \
-  --with-http_auth_request_module \
-  --with-http_random_index_module \
-  --with-http_secure_link_module \
-  --with-http_degradation_module \
-  --with-http_slice_module \
-  --with-http_stub_status_module \
+  --with-http_image_filter_module=dynamic \
+  --with-http_mp4_module \
   --with-http_perl_module=dynamic \
-  --with-perl_modules_path=/usr/share/perl/5.26.1 \
-  --with-perl=/usr/bin/perl \
-  --http-log-path=/var/log/nginx/access.log \
-  --http-client-body-temp-path=/var/cache/nginx/client_temp \
-  --http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-  --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-  --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
-  --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
-  --with-mail=dynamic \
+  --with-http_random_index_module \
+  --with-http_realip_module \
+  --with-http_secure_link_module \
+  --with-http_slice_module \
+  --with-http_ssl_module \
+  --with-http_stub_status_module \
+  --with-http_sub_module \
+  --with-http_v2_module \
+  --with-http_xslt_module=dynamic \
   --with-mail_ssl_module \
-  --with-stream=dynamic \
-  --with-stream_ssl_module \
-  --with-stream_realip_module \
-  --with-stream_geoip_module=dynamic \
-  --with-stream_ssl_preread_module \
-  --with-compat \
+  --with-mail=dynamic \
+  --with-openssl-opt=no-nextprotoneg \
   --with-pcre \
   --with-pcre-jit \
-  --with-openssl-opt=no-nextprotoneg \
-  --with-debug \
-  --add-module=/usr/src/nginx-dav-ext-module-${NGINX_DAV_EXT_VER} 
+  --with-perl_modules_path=/usr/share/perl/5.26.1 \
+  --with-perl=/usr/bin/perl \
+  --with-poll_module \
+  --with-select_module \
+  --with-stream_geoip_module=dynamic \
+  --with-stream_realip_module \
+  --with-stream_ssl_module \
+  --with-stream_ssl_preread_module \
+  --with-stream=dynamic \
+  --with-threads \
+  --add-module=/usr/src/nginx-dav-ext-module-${NGINX_DAV_EXT_VER} \
+  --add-module=/usr/src/headers-more-nginx-module-${HEADERS_MORE_VER} 
 
 RUN make -j${MAKE_THREADS} && \
   make install
